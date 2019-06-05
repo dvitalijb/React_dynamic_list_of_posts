@@ -1,0 +1,13 @@
+td {
+   border-bottom: 1px solid lightcoral;
+}
+
+section {
+    border: 1px solid royalblue;
+    border-radius: 10px;
+    text-align: center;
+}
+
+p {
+    font-style: italic;
+}
