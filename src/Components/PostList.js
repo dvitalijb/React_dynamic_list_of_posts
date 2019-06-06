@@ -1,5 +1,5 @@
 import React from 'react';
-import {Component} from 'react';
+import { Component } from 'react';
 import Post from './Post';
 
 class PostList extends Component {
@@ -77,15 +77,12 @@ class PostList extends Component {
             const postComponents = this.state.posts.filter(post => {
                 return post.title.includes(this.state.filter)
             });
-
             const usersMap = this.state.users.reduce((acc, user) => ({...acc, [user.id]: user,}), {});
-            const commentsMap = this.state.comments
-                .reduce((acc, comment) => ({...acc, [comment.id]: comment,}), {});
             const items = postComponents.map(item => <Post key={item.id}
                                                            userId={item.userId}
                                                            title={item.title}
                                                            body={item.body}
-                                                           commentsMap={commentsMap}
+                                                           comments={this.state.comments}
                                                            usersMap={usersMap}/>);
 
             return (
