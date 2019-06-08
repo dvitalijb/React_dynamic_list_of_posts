@@ -1,8 +1,7 @@
-import React from 'react';
-import { Component } from 'react';
-import Post from './Post';
+import React,{ Component } from 'react';
+import { Post } from './Post';
 
-class PostList extends Component {
+export class PostList extends Component {
     constructor(props) {
         super(props);
 
@@ -30,10 +29,11 @@ class PostList extends Component {
         const xhrPosts = new XMLHttpRequest();
         const xhrUsers = new XMLHttpRequest();
         const xhrComments = new XMLHttpRequest();
+        const url = 'https://jsonplaceholder.typicode.com/';
 
-        xhrPosts.open('GET', ' https://jsonplaceholder.typicode.com/posts');
-        xhrUsers.open('GET', 'https://jsonplaceholder.typicode.com/users');
-        xhrComments.open('GET', 'https://jsonplaceholder.typicode.com/comments');
+        xhrPosts.open('GET', `${url}posts`);
+        xhrUsers.open('GET', `${url}users`);
+        xhrComments.open('GET', `${url}comments`);
 
         xhrPosts.addEventListener('load', () => {
             this.setState({
@@ -75,39 +75,39 @@ class PostList extends Component {
                    && this.state.comments
                   ) {
             const postComponents = this.state.posts.filter(post => {
-                return post.title.includes(this.state.filter)
+                return post.title.includes(this.state.filter);
             });
             const usersMap = this.state.users.reduce((acc, user) => ({...acc, [user.id]: user,}), {});
-            const items = postComponents.map(item => <Post key={item.id}
-                                                           userId={item.userId}
-                                                           title={item.title}
-                                                           body={item.body}
-                                                           comments={this.state.comments}
-                                                           usersMap={usersMap}/>);
+            const items = postComponents.map(item => (<Post key={item.id}
+                                                            userId={item.userId}
+                                                            title={item.title}
+                                                            body={item.body}
+                                                            id={item.id}
+                                                            comments={this.state.comments}
+                                                            usersMap={usersMap}
+                                                            />));
 
             return (
                 <div>
                     <input type="text" placeholder="search by title" onChange={this.filterChanged}/>
                     <table>
                         <thead>
-                        <tr>
-                            <th>Post</th>
-                            <th>User</th>
-                            <th>Comments</th>
-                        </tr>
+                            <tr>
+                                <th>Post</th>
+                                <th>User</th>
+                                <th>Comments</th>
+                            </tr>
                         </thead>
-                        <tbody>
-                        {items}
-                        </tbody>
+                            <tbody>
+                                {items}
+                            </tbody>
                     </table>
                 </div>
-            )
+            );
         } else {
             return (
                 <div>Loading...</div>
-            )
+            );
         }
     }
 }
-
-export default PostList;
