@@ -1,5 +1,5 @@
 import React,{ Component } from 'react';
-import { Post } from './Post';
+import { Posts } from './Posts';
 
 export class PostList extends Component {
     constructor(props) {
@@ -14,7 +14,7 @@ export class PostList extends Component {
             users: null,
             posts: null,
             comments: null,
-            filter: ''
+            postComponents: null
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -36,9 +36,11 @@ export class PostList extends Component {
         xhrComments.open('GET', `${url}comments`);
 
         xhrPosts.addEventListener('load', () => {
+            const dataPosts = JSON.parse(xhrPosts.response);
             this.setState({
                 loadedPosts: true,
-                posts: JSON.parse(xhrPosts.response)
+                posts: dataPosts,
+                postComponents: dataPosts
             });
         });
         xhrUsers.addEventListener('load', () => {
@@ -60,32 +62,35 @@ export class PostList extends Component {
     }
 
     filterChanged(event) {
+        const filteredPosts =this.state.posts.filter(post => {
+            return post.title.includes(event.target.value);
+        });
+
         this.setState(
-            {filter: event.target.value}
+             {postComponents: filteredPosts}
         );
     }
 
     render() {
         if (!this.state.requested) {
 
-            return <button onClick={this.handleClick}>Download posts!</button>;
+            return <input type="button" onClick={this.handleClick} value="Download posts!" />;
         } else if (
                    this.state.loadedUsers
                    && this.state.loadedPosts
                    && this.state.comments
                   ) {
-            const postComponents = this.state.posts.filter(post => {
-                return post.title.includes(this.state.filter);
-            });
             const usersMap = this.state.users.reduce((acc, user) => ({...acc, [user.id]: user,}), {});
-            const items = postComponents.map(item => (<Post key={item.id}
-                                                            userId={item.userId}
-                                                            title={item.title}
-                                                            body={item.body}
-                                                            id={item.id}
-                                                            comments={this.state.comments}
-                                                            usersMap={usersMap}
-                                                            />));
+            const items = this.state.postComponents.map(item => (
+              <Posts key={item.id}
+                userId={item.userId}
+                title={item.title}
+                body={item.body}
+                id={item.id}
+                comments={this.state.comments}
+                usersMap={usersMap}
+              />
+             ));
 
             return (
                 <div>
@@ -106,8 +111,8 @@ export class PostList extends Component {
             );
         } else {
             return (
-                <div>Loading...</div>
-            );
+                <input type="button" disabled={true} value="Loading..."/>
+                );
         }
     }
 }

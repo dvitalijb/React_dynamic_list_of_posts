@@ -2,7 +2,7 @@ import React from 'react';
 import { User } from './User';
 import { CommentList } from './CommentList';
 
-export function Post(props) {
+export function Posts(props) {
     const { usersMap, comments, userId, title, body, id } = props;
     const commentItems = comments.filter(comment => comment.postId === id);
     const user = usersMap[userId];
